@@ -21,10 +21,11 @@ namespace Tests
         {
             var content = GetResource("Tests.Resources.Sample.md");
 
-            var output = Directives.Parse(content);
+            var output = Directives.Parse(content, Directives.TitleMacro);
 
             Assert.IsTrue(output.Directives.Count == 3);
             Assert.IsTrue(output.Directives.ContainsKey("route"));
+            Assert.IsTrue(output.Directives["route"].Equals("whatever\\this\\is\\Umma Gumma"));
 
             Assert.IsTrue(output.CleanMarkdown.Equals(
 @"# Umma Gumma

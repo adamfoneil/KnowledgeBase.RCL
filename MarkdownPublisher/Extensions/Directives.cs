@@ -28,7 +28,7 @@ namespace MarkdownPublisher.Extensions
         /// <summary>
         /// any initial lines of text starting with "@" are assumed to be key + value pairs
         /// </summary>
-        public static (Dictionary<string, string> Directives, string CleanMarkdown) Parse(string content)
+        public static (Dictionary<string, string> Directives, string CleanMarkdown) Parse(string content, Dictionary<string, Func<string, string>>? macros = null)
         {
             var lines = content.Split("\r\n");
 
@@ -54,6 +54,22 @@ namespace MarkdownPublisher.Extensions
 
             var cleanMarkdown = string.Join("\r\n", lines[lineIndex..]);
 
+            if (macros is not null)
+            {
+                foreach (var m in macros)
+                {
+                    foreach (var kp in directives)
+                    {
+                        var token = $"[{m.Key}]";
+                        if (kp.Value.Contains(token))
+                        {
+                            var newValue = m.Value.Invoke(cleanMarkdown);
+                            directives[kp.Key] = kp.Value.Replace(token, newValue);
+                        }
+                    }
+                }
+            }
+                       
             return (directives, cleanMarkdown);
         }
 
@@ -76,6 +92,26 @@ namespace MarkdownPublisher.Extensions
         {
             var keyPair = ParseKeyValuePair(input);
             dictionary.Add(keyPair.Key, keyPair.Value);
+        }
+
+        public static Dictionary<string, Func<string, string>> TitleMacro => new()
+        {
+            ["title"] = FindFirstHeading
+        };
+
+        public static string FindFirstHeading(string markdown)
+        {
+            var lines = markdown.Split("\r\n");
+
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("#"))
+                {
+                    return line.Replace("#", string.Empty).Trim();
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

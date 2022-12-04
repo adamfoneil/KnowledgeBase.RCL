@@ -25,10 +25,14 @@ namespace MarkdownPublisher.Abstract
         {
             var sourceFiles = Directory.GetFiles(sourcePath, "*.md", SearchOption.AllDirectories);
 
+            var routes = new HashSet<string>();
+
             await foreach (var file in BuildHtmlFiles(sourcePath, sourceFiles))
             {
                 try
                 {
+                    if (file.Directives.TryGetValue("route", out string? val) && !string.IsNullOrEmpty(val)) routes.Add(val);
+
                     await PublishFileAsync(file.LocalHtmlFile, file.BlobName);
                 }
                 finally
@@ -43,14 +47,15 @@ namespace MarkdownPublisher.Abstract
             foreach (var sourceFile in sourceFiles)
             {
                 var markdown = await File.ReadAllTextAsync(sourceFile);
-                var (directives, cleanMarkdown) = Directives.Parse(markdown);
+                var (directives, cleanMarkdown) = Directives.Parse(markdown, Directives.TitleMacro);                
+
                 var html = Markdown.ToHtml(cleanMarkdown);
 
                 var sourceName = await SaveTempHtmlFileAsync(sourceFile, html);
                 var targetName = sourceName.Substring(sourcePath.Length + 1);
                 yield return (directives, sourceName, targetName);
             }
-        }        
+        }
 
         private async Task<string> SaveTempHtmlFileAsync(string file, string content)
         {            

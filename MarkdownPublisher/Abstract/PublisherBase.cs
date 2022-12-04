@@ -1,5 +1,8 @@
 ﻿using Markdig;
+using MarkdownPublisher.Extensions;
 using MarkdownPublisher.Interfaces;
+using Microsoft.Extensions.Azure;
+using System.Net.Mail;
 
 namespace MarkdownPublisher.Abstract
 {
@@ -35,18 +38,19 @@ namespace MarkdownPublisher.Abstract
             }
         }
 
-        private async IAsyncEnumerable<(string LocalHtmlFile, string BlobName)> BuildHtmlFiles(string sourcePath, string[] sourceFiles)
+        private async IAsyncEnumerable<(Dictionary<string, string> Directives, string LocalHtmlFile, string BlobName)> BuildHtmlFiles(string sourcePath, string[] sourceFiles)
         {
             foreach (var sourceFile in sourceFiles)
             {
                 var markdown = await File.ReadAllTextAsync(sourceFile);
-                var html = Markdown.ToHtml(markdown);
+                var (directives, cleanMarkdown) = Directives.Parse(markdown);
+                var html = Markdown.ToHtml(cleanMarkdown);
 
                 var sourceName = await SaveTempHtmlFileAsync(sourceFile, html);
                 var targetName = sourceName.Substring(sourcePath.Length + 1);
-                yield return (sourceName, targetName);
+                yield return (directives, sourceName, targetName);
             }
-        }
+        }        
 
         private async Task<string> SaveTempHtmlFileAsync(string file, string content)
         {            

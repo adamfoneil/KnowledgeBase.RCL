@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MarkdownPublisher": {
+      "commandName": "Project",
+      "commandLineArgs": "--source-path \"C:\\Users\\adamo\\source\\repos\\Hs5.wiki\""
+    }
+  }
+}

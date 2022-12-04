@@ -2,9 +2,19 @@
 
 internal partial class Program
 {
-    internal static IEnumerable<string> GetMarkdownFiles()
+    internal static string FindMdPubConfigFile()
     {
-        var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new Exception("Couldn't determine base path");
-        return Directory.GetFiles(path, "*.md", SearchOption.AllDirectories);
+        const string fileName = "mdpub.json";
+
+        var folder = Environment.CurrentDirectory;
+        var result = string.Empty;
+
+        do
+        {
+            result = Path.Combine(folder, fileName);
+            folder = Directory.GetParent(folder)?.FullName ?? throw new Exception($"No parent directory of {folder}");
+        } while (!File.Exists(result));
+
+        return result;
     }
 }

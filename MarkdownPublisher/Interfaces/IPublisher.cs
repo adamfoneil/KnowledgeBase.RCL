@@ -2,6 +2,6 @@
 {
     internal interface IPublisher
     {
-        Task PublishAsync(string sourcePath);
+        Task PublishAsync(string sourcePath);        
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MarkdownPublisher.Extensions
 {
-    public static class Directives
+    public static class Metadata
     {
         public static (string Key, string Value) ParseKeyValuePair(string input) 
         {
@@ -28,7 +28,7 @@ namespace MarkdownPublisher.Extensions
         /// <summary>
         /// any initial lines of text starting with "@" are assumed to be key + value pairs
         /// </summary>
-        public static (Dictionary<string, string> Directives, string CleanMarkdown) Parse(string content, Dictionary<string, Func<string, string>>? macros = null)
+        public static (Dictionary<string, string> Directives, string CleanMarkdown, string Title) Parse(string content, Dictionary<string, Func<string, string>>? macros = null)
         {
             var lines = content.Split("\r\n");
 
@@ -69,18 +69,22 @@ namespace MarkdownPublisher.Extensions
                     }
                 }
             }
+
+            var title = FindFirstHeading(cleanMarkdown);
                        
-            return (directives, cleanMarkdown);
+            return (directives, cleanMarkdown, title);
         }
 
-        private static string RemoveQuotes(string value)
+        public static string RemoveStartEnd(string value, string startsWith, string endsWith)
         {
             var result = value;
-            if (result.StartsWith("\"")) result = result.Substring(1);
-            if (result.EndsWith("\"")) result = result.Substring(0, result.Length - 1);
+            if (result.StartsWith(startsWith)) result = result.Substring(startsWith.Length);
+            if (result.EndsWith(endsWith)) result = result.Substring(0, result.Length - endsWith.Length);
             return result;
         }
 
+        private static string RemoveQuotes(string value) => RemoveStartEnd(value, "\"", "\"");
+        
         private static string RemoveAtSign(string value)
         {
             var result = value;

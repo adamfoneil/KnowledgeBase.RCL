@@ -11,7 +11,7 @@ namespace Tests
         [DataRow("@route whatever\\this\\is", "route", @"whatever\this\is")]
         public void ParseDirectives(string input, string key, string value)
         {
-            var output = Directives.ParseKeyValuePair(input);
+            var output = Metadata.ParseKeyValuePair(input);
             Assert.IsTrue(output.Key.Equals(key));
             Assert.IsTrue(output.Value.Equals(value));
         }
@@ -21,7 +21,7 @@ namespace Tests
         {
             var content = GetResource("Tests.Resources.Sample.md");
 
-            var output = Directives.Parse(content, Directives.TitleMacro);
+            var output = Metadata.Parse(content, Metadata.TitleMacro);
 
             Assert.IsTrue(output.Directives.Count == 3);
             Assert.IsTrue(output.Directives.ContainsKey("route"));

@@ -7,7 +7,7 @@ namespace MarkdownPublisher.Azure
 {
     internal class Publisher : PublisherBase<Options>
     {
-        public Publisher(Dictionary<string, string> config) : base(config)
+        public Publisher(string sourcePath, Dictionary<string, string> config) : base(sourcePath, config)
         {
         }
 
@@ -15,7 +15,8 @@ namespace MarkdownPublisher.Azure
         {
             ConnectionString = config["ConnectionString"],
             ContainerName = config["ContainerName"],
-            BlobPrefix = config.TryGetValue("BlobPrefix", out string? val) ? val : default!
+            BlobPrefix = config.TryGetValue("BlobPrefix", out string? blobPrefix) ? blobPrefix : default!,
+            HostRoutePrefix = config.TryGetValue("HostRoutePrefix", out string? routePrefix) ? routePrefix : default!
         };
         
         protected override async Task PublishFileAsync(string localFile, string targetFile)

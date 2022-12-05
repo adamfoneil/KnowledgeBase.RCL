@@ -9,9 +9,9 @@ var config = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, st
 
 // might theoretically support different publish targets,
 // so they would go in this dictionary
-var publishers = new Dictionary<string, IPublisher>()
+var publishers = new Dictionary<string, Func<string, IPublisher>>()
 {
-    ["Azure"] = new MarkdownPublisher.Azure.Publisher(config["Azure"])
+    ["Azure"] = (sourcePath) => new MarkdownPublisher.Azure.Publisher(sourcePath, config["Azure"])
 };
 
 await Parser.Default.ParseArguments<CommandOptions>(args).WithParsedAsync(async options =>
@@ -20,9 +20,13 @@ await Parser.Default.ParseArguments<CommandOptions>(args).WithParsedAsync(async 
         Environment.CurrentDirectory : 
         options.SourcePath;
 
-    var publisher = string.IsNullOrEmpty(options.Publisher) ?
+    var publisherAccessor = string.IsNullOrEmpty(options.Publisher) ?
         publishers.First().Value :
         publishers[options.Publisher];
+
+    // this allows project-level settings in a KB to be injected into the configuration,
+    // which depends on knowing the project source path
+    var publisher = publisherAccessor.Invoke(sourcePath);
 
     await publisher.PublishAsync(sourcePath);
 });

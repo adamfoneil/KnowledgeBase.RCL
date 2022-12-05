@@ -1,4 +1,6 @@
-﻿using Markdig;
+﻿using FolderStructure;
+using KnowledgeBase.Shared;
+using Markdig;
 using MarkdownPublisher.Extensions;
 using MarkdownPublisher.Interfaces;
 using System.Text.Json;
@@ -26,13 +28,16 @@ namespace MarkdownPublisher.Abstract
         {
             var sourceFiles = Directory.GetFiles(sourcePath, "*.md", SearchOption.AllDirectories);
 
-            var routes = new HashSet<(string Path, string Text)>();
+            var routes = new HashSet<NavEntry>();
 
             await foreach (var file in BuildHtmlFiles(sourcePath, sourceFiles))
             {
                 try
                 {
-                    if (file.Directives.TryGetValue("route", out string? val) && !string.IsNullOrEmpty(val)) routes.Add((val, file.Title));
+                    if (file.Directives.TryGetValue("route", out string? val) && !string.IsNullOrEmpty(val))
+                    {
+                        routes.Add(new NavEntry() { Route = val, Href = file.Href });
+                    }
 
                     await PublishFileAsync(file.TempFilename, file.RemoteFilename);
                 }
@@ -41,6 +46,13 @@ namespace MarkdownPublisher.Abstract
                     File.Delete(file.TempFilename);
                 }
             }
+            
+            var nav = Folder<NavEntry>.From(routes, r => r.Route);
+            var navJson = JsonSerializer.Serialize(nav);
+            const string navFilename = "nav.json";
+            var navFile = Path.Combine(sourcePath, navFilename);
+            await File.WriteAllTextAsync(navFile, navJson);
+            await PublishFileAsync(navFile, Config.BlobPrefix + navFilename);
         }
 
         private void AddProjectOptions(string sourcePath, Dictionary<string, string> config)
@@ -66,14 +78,17 @@ namespace MarkdownPublisher.Abstract
                 var html = Markdown.ToHtml(cleanMarkdown);
 
                 var tempHtmlFile = await SaveTempHtmlFileAsync(sourceFile, html);
-                var targetName = tempHtmlFile.Substring(sourcePath.Length + 1);
+                var baseFilename = tempHtmlFile.Substring(sourcePath.Length + 1);
+                var targetName = Config.BlobPrefix + baseFilename;
+                var href = Config.HostRoutePrefix + baseFilename;
 
                 yield return new FileInfo()
                 {
                     TempFilename = tempHtmlFile,
                     RemoteFilename = targetName,
                     Directives = directives,
-                    Title = title
+                    Title = title,
+                    Href = href
                 };
             }
         }
@@ -112,6 +127,7 @@ namespace MarkdownPublisher.Abstract
             public string TempFilename { get; init; } = default!;
             public string RemoteFilename { get; init; } = default!;
             public string Title { get; init; } = default!;
+            public string Href { get; init; } = default!;
         }
     }
 }

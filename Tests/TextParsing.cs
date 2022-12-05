@@ -19,7 +19,7 @@ namespace Tests
         [TestMethod]
         public void ParseSampleContent()
         {
-            var content = GetResource("Tests.Resources.Sample.md");
+            var content = Static.GetResource("Tests.Resources.Sample.md");
 
             var output = Metadata.Parse(content, Metadata.TitleMacro);
 
@@ -38,14 +38,6 @@ Here is a list of something:
 - other
 
 I am a [link](/somewhere) for the people."));
-        }
-
-        private static string GetResource(string resourceName)
-        {
-            var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-
-            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName) ?? throw new Exception($"Resource {resourceName} not found");
-            return new StreamReader(stream).ReadToEnd();
         }
     }
 }

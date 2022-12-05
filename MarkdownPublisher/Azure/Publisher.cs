@@ -2,6 +2,7 @@
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using MarkdownPublisher.Abstract;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace MarkdownPublisher.Azure
 {
@@ -30,9 +31,15 @@ namespace MarkdownPublisher.Azure
             {
                 HttpHeaders = new BlobHttpHeaders()
                 {
-                    ContentType = "text/html"
+                    ContentType = GetContentType()
                 }
             });
+
+            string GetContentType()
+            {
+                var provider = new FileExtensionContentTypeProvider();
+                return (provider.TryGetContentType(targetFile, out string contentType)) ? contentType : "application/octet-stream";
+            }
         }
     }
 }

@@ -1,0 +1,64 @@
+﻿@using System.Net.Http.Json;
+@inject HttpClient Http
+
+<div class="d-flex align-items-start">
+    <div class="col-2">
+        <RadzenTree Data="@sidebar.Children" Change="LoadTopic">
+            <RadzenTreeLevel Text="GetText" HasChildren="HasChildren" ChildrenProperty="Children"/>
+        </RadzenTree>
+    </div>
+    <div class="col-10 ms-4 ml-4 border-start border-left ps-4 pl-4">        
+        @content        
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public string? BaseUrl { get; set; }
+
+    [Parameter]
+    public string? NavJsonHref { get; set; }
+
+    Folder<NavEntry> sidebar = new();
+    MarkupString content;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(NavJsonHref))
+        {
+            var url = BaseUrl + NavJsonHref;
+            sidebar = await Http.GetFromJsonAsync<Folder<NavEntry>>(url) ?? new();
+        }
+    }
+
+    string GetText(object item)
+    {
+        if (item is Folder<NavEntry> folder)
+        {
+            return folder.Name;
+        }
+
+        return "unknown";
+    }
+
+    bool HasChildren(object item)
+    {
+        if (item is Folder<NavEntry> folder)
+        {
+            return folder.Children.Any();
+        }
+
+        return false;
+    }
+
+    async Task LoadTopic(TreeEventArgs args)
+    {
+        if (args.Value is Folder<NavEntry> folder && folder.Data is not null)
+        {
+            var url = BaseUrl + folder.Data.Href;
+            var html = await Http.GetStringAsync(url);
+            content = new MarkupString(html);
+            StateHasChanged();
+        }
+    }
+}

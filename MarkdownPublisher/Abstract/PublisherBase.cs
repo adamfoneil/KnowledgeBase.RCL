@@ -1,5 +1,5 @@
 ﻿using FolderStructure;
-using KnowledgeBase.Shared;
+using Knowledgebase.Shared;
 using Markdig;
 using MarkdownPublisher.Extensions;
 using MarkdownPublisher.Interfaces;
@@ -36,7 +36,7 @@ namespace MarkdownPublisher.Abstract
                 {
                     if (file.Directives.TryGetValue("route", out string? val) && !string.IsNullOrEmpty(val))
                     {
-                        routes.Add(new NavEntry() { Route = val, Href = file.Href });
+                        routes.Add(new NavEntry() { Route = val, HostHref = file.Href, Href = file.RemoteFilename });
                     }
 
                     await PublishFileAsync(file.TempFilename, file.RemoteFilename);

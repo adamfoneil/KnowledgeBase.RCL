@@ -4,7 +4,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Knowledgebase.RCL</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\MarkdownPublisher\Shared\NavEntry.cs" Link="Models\NavEntry.cs" />
+  </ItemGroup>
 
 
   <ItemGroup>
@@ -12,8 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AO.FolderStructure" Version="1.0.0" />
+    <PackageReference Include="AO.FolderStructure" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
+    <PackageReference Include="Radzen.Blazor" Version="4.4.3" />
   </ItemGroup>
 
   <ItemGroup>

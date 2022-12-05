@@ -20,6 +20,8 @@
     public string? NavJsonHref { get; set; }
 
     Folder<NavEntry> sidebar = new();
+    string? contentHref;
+    Dictionary<string, MarkupString> cache = new();
     MarkupString content;
 
     protected override async Task OnParametersSetAsync()
@@ -55,9 +57,16 @@
     {
         if (args.Value is Folder<NavEntry> folder && folder.Data is not null)
         {
-            var url = BaseUrl + folder.Data.Href;
-            var html = await Http.GetStringAsync(url);
-            content = new MarkupString(html);
+            contentHref = folder.Data.Href;
+
+            if (!cache.ContainsKey(contentHref))
+            {
+                var url = BaseUrl + folder.Data.Href;
+                var html = await Http.GetStringAsync(url);
+                cache.Add(contentHref, new MarkupString(html));
+            }
+
+            content = cache[contentHref];
             StateHasChanged();
         }
     }

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KnowledgeBase.RCL\Knowledgebase.RCL.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.RCL\KnowledgeBase.RCL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownPublisher", "Markdo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{5C5016E8-C82B-4685-B933-1E19F549C0D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Knowledgebase.RCL", "KnowledgeBase.RCL\Knowledgebase.RCL.csproj", "{56944114-B52E-469B-AC7A-FC4434DD8BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowledgeBase.RCL", "KnowledgeBase.RCL\KnowledgeBase.RCL.csproj", "{56944114-B52E-469B-AC7A-FC4434DD8BFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleKB", "SampleKB\SampleKB.csproj", "{D0D13FC3-AC58-4487-9F36-EA5F8EDA57D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleKB", "SampleKB\SampleKB.csproj", "{D0D13FC3-AC58-4487-9F36-EA5F8EDA57D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

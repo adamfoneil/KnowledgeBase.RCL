@@ -2,6 +2,6 @@ This came from a need to integrate end user help and knowledge base content into
 
 So, there are two parts to this:
 - A CLI tool for publishing content: [MarkdownPublisher](https://github.com/adamfoneil/Wiki.RCL/tree/master/MarkdownPublisher)
-- A set of Razor components for viewing this content in my target application: [Wiki.RCL](https://github.com/adamfoneil/Wiki.RCL/tree/master/Wiki.RCL), in order to give users a seamless reading and navigation experience.
+- A set of Razor components for viewing this content in my target application: [Knowledgebase.RCL](https://github.com/adamfoneil/Wiki.RCL/tree/master/Knowledgebase.RCL), in order to give users a seamless reading and navigation experience.
 
 I'm not quite sure this qualifies as a "wiki" exactly since it's not intended to be edited by users. There might some kind of feedback mechanism for requesting updates, but it's a bit early for that.

@@ -94,8 +94,8 @@ namespace MarkdownPublisher.Abstract
         }
 
         /// <summary>
-        /// applies the HostRoutePrefix to all links in markdown content,
-        /// and replaces .md suffixes with .html
+        /// applies the HostRoutePrefix to all .md link in markdown content,        
+        /// should leave links to application content alone
         /// </summary>
         private void UpdateLinks(ref string markdown)
         {

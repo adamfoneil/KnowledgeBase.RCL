@@ -99,7 +99,7 @@ namespace MarkdownPublisher.Abstract
         /// </summary>
         private void UpdateLinks(ref string markdown)
         {
-            markdown = Regex.Replace(markdown, @"\[(.*?)\](?<target>\(.*?\))", BuildLink);            
+            markdown = Regex.Replace(markdown, @"\[(.*?)\](?<target>\(.*?.md\))", BuildLink);            
 
             string BuildLink(Match match)
             {
